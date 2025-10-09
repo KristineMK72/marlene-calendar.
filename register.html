@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Marlene's Calendar 🐱</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Create Account 💕</h1>
+        
+        <form id="register-form"> 
+            <input type="email" id="register-email" placeholder="Email" required />
+            <input type="password" id="register-password" placeholder="Password" required />
+            <button type="submit">Register</button>
+        </form>
+        
+        <p>Already have an account? <a href="login.html">Login</a></p>
+    </div>
+
+    <script type="module">
+        import { registerUser, subscribeToAuthChanges } from "./auth.js"; 
+
+        // CRITICAL: The element IDs must be exactly right to avoid the 'null' error
+        const form = document.getElementById('register-form');
+        const emailInput = document.getElementById('register-email');
+        const passwordInput = document.getElementById('register-password');
+        
+        // Check auth status to redirect if user is already logged in
+        subscribeToAuthChanges((user) => {
+            if (user) {
+                // If user is logged in, redirect to the main calendar page
+                window.location.href = 'index.html'; 
+            }
+        });
+
+        // --- Registration Logic ---
+        // This listener will now successfully attach because 'form' is guaranteed to exist.
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            try {
+                await registerUser(email, password);
+                alert("Account created! Redirecting to calendar.");
+                // Redirect will happen via the subscribeToAuthChanges listener
+            } catch (error) {
+                alert(`Registration failed: ${error.message}`);
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+/*
+ * MARLENE'S CALENDAR STYLE SHEET
+ * Theme: Pastel Pink / Kitten Background
+ */
+
+body {
+  font-family: Arial, sans-serif;
+  /* NEW KITTEN BACKGROUND FIX */
+  background: url("https://tse1.explicit.bing.net/th/id/OIP.sv4n6Lp18ATyaVTkPJXyjwHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3/1200/800") no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  /* Make content readable over the background */
+  background: rgba(255, 255, 255, 0.9); 
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 650px;
+  margin: 50px auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+h1 {
+  text-align: center;
+  color: #e77ab5; /* Pink header */
+}
+
+/* --- Form and Button Styling (Applies to Login/Register too) --- */
+#event-form, #login-form, #register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+input, button {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+button {
+  background-color: #e77ab5; /* Pink buttons */
+  color: white;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+button:hover {
+  background-color: #d766a2;
+}
+.logout-btn {
+  float: right;
+  background-color: #ff9eb5; /* Lighter pink for logout */
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.logout-btn:hover {
+    background-color: #f4748e;
+}
+
+/* --- Event List Styling --- */
+#event-list {
+  list-style: none;
+  padding: 0;
+}
+#event-list li {
+  background: #fdf0f6; /* Very light pink background for events */
+  margin-bottom: 12px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Click-to-Expand Toggle Styles */
+.event-summary {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+}
+
+.expand-indicator {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-left: 10px;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.event-details {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #e77ab5; /* Pastel dash for separation */
+}
+
+.event-details.hidden {
+    display: none;
+}
+
+.event-details .label {
+    font-weight: bold;
+    color: #e77ab5; /* Pink color for labels */
+}
+.event-details button {
+    background-color: #f4748e; /* Delete button */
+    margin-top: 10px;
+    padding: 6px 12px;
+}
+
+/* Login Page Styles */
+.separator {
+    text-align: center;
+    margin: 15px 0;
+    font-size: 0.9em;
+    color: #999;
+}
+
+.google-btn {
+    background-color: #db4437 !important; /* Google Red */
+    border: none;
+    margin-bottom: 20px;
+}
+
+.google-btn:hover {
+    background-color: #c0362c !important;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+}

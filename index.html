@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marlene's Calendar 🐱</title>
+    
+    <meta http-equiv="Content-Security-Policy" 
+          content="script-src 'self' https://www.gstatic.com https://*.firebaseio.com; object-src 'self'">
+
+    <link rel="stylesheet" href="style.css?v=1" /> 
+
+    <!-- ADDED type="module" HERE -->
+    <script type="module" src="auth.js?v=1" defer></script>
+    <!-- ADDED type="module" HERE -->
+    <script type="module" src="script.js?v=1" defer></script>
+</head>
+<body>
+  <div class="container">
+    
+    <button id="logout-btn" class="logout-btn" style="display:none;">Logout</button>
+    
+    <a href="login.html" id="login-link" class="login-link" style="display:none;">Log In / Sign Up</a>
+    
+    <h1>Marlene's Calendar</h1>
+
+    <form id="event-form">
+      <input type="text" id="event-title" placeholder="Event Title" required />
+      <input type="date" id="event-date" required />
+      <input type="text" id="event-location" placeholder="Location (optional)" />
+      <button type="submit">Add Event</button>
+    </form>
+
+    <ul id="event-list"></ul>
+  </div>
+</body>
+</html>

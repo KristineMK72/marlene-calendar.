@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Marlene's Calendar 🐱</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome Back 💖</h1>
+        
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required />
+            <input type="password" id="login-password" placeholder="Password" required />
+            <button type="submit">Log In</button>
+        </form>
+
+        <p class="separator">— OR —</p>
+
+        <button id="google-login-btn" class="google-btn">
+            Sign in with Google
+        </button>
+
+        <p class="register-link">
+            Don’t have an account? <a href="register.html">Sign up</a>
+        </p>
+    </div>
+
+    <script type="module" src="auth.js"></script>
+    <script type="module">
+        // Import auth functions
+        import { loginUser, signInWithGoogle, subscribeToAuthChanges } from './auth.js';
+
+        // Handle form submission for email/password login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                await loginUser(email, password);
+                console.log('Login successful');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Login failed:', error.message);
+                alert('Login failed: ' + error.message);
+            }
+        });
+
+        // Handle Google sign-in button click
+        document.getElementById('google-login-btn').addEventListener('click', async () => {
+            try {
+                await signInWithGoogle();
+                console.log('Google login successful');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Google login failed:', error.message);
+                alert('Google login failed: ' + error.message);
+            }
+        });
+
+        // Subscribe to auth state changes
+        subscribeToAuthChanges((user) => {
+            if (user) {
+                console.log('Auth state changed - User logged in:', user.uid);
+                if (window.location.pathname.endsWith('login.html')) {
+                    window.location.href = 'index.html';
+                }
+            } else {
+                console.log('Auth state changed - No user logged in');
+            }
+        });
+    </script>
+</body>
+</html>
