@@ -75,7 +75,7 @@ async function loadAndDisplayEvents() {
     console.log("Attempting to load events...");
     const q = query(collection(db, "events")); // Fetch all events
     const querySnapshot = await getDocs(q);
-    console.log("Query Snapshot: ", querySnapshot);
+    console.log("Query Snapshot: ", querySnapshot.size, "documents");
 
     list.innerHTML = "";
     
@@ -86,8 +86,12 @@ async function loadAndDisplayEvents() {
 
     querySnapshot.forEach((docSnap) => {
       const ev = docSnap.data();
-      // Ensure comments is an array, converting string or null to array if needed
-      const comments = Array.isArray(ev.comments) ? ev.comments : [ev.comments || "No comments yet."];
+      // Robustly handle comments, ensuring it's always an array
+      const comments = Array.isArray(ev.comments) 
+        ? ev.comments 
+        : ev.comments === undefined || ev.comments === null 
+          ? ["No comments yet."]
+          : [ev.comments.toString() || "No comments yet."];
       const li = document.createElement("li");
       li.classList.add('event-item');
 
@@ -101,4 +105,107 @@ async function loadAndDisplayEvents() {
           <p><span class="label">Notes:</span> ${comments.length > 0 ? comments.join(', ') : 'N/A'}</p>
           <p><span class="label">Added by:</span> ${ev.createdBy || 'Unknown'}</p>
           <button class="delete-btn" data-doc-id="${docSnap.id}">Delete</button>
-          <button class="add-comment-btn" data-doc-id="${docSnap.id}">Add Comment
+          <button class="add-comment-btn" data-doc-id="${docSnap.id}">Add Comment</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Error loading events:", error.message);
+    list.innerHTML = `<p>Failed to load events: ${error.message}. Check Firebase rules or internet connection.</p>`;
+  }
+}
+
+// --- 3. Click-to-Expand, Delete, and Add Comment Logic ---
+list.addEventListener('click', (e) => {
+  const summary = e.target.closest('.event-summary');
+  if (summary) {
+    const details = summary.nextElementSibling;
+    const indicator = summary.querySelector('.expand-indicator');
+    details.classList.toggle('hidden');
+    indicator.textContent = details.classList.contains('hidden') ? '+' : '–';
+    return; 
+  }
+  
+  if (e.target.classList.contains('delete-btn')) {
+    const docId = e.target.dataset.docId;
+    if (confirm("Are you sure you want to delete this event?")) {
+      deleteEvent(docId);
+    }
+  }
+
+  if (e.target.classList.contains('add-comment-btn')) {
+    const docId = e.target.dataset.docId;
+    addComment(docId);
+  }
+});
+
+// --- 4. Delete Event Function ---
+async function deleteEvent(docId) {
+  try {
+    await deleteDoc(doc(db, "events", docId));
+    loadAndDisplayEvents();
+  } catch (error) {
+    console.error("Error deleting document:", error);
+    alert("Failed to delete event.");
+  }
+}
+
+// --- 5. Add Comment Function ---
+async function addComment(docId) {
+  const newComment = prompt('Add a comment:');
+  if (newComment) {
+    try {
+      const eventDoc = await getDoc(doc(db, "events", docId));
+      if (eventDoc.exists()) {
+        const data = eventDoc.data();
+        const updatedComments = [...(Array.isArray(data.comments) 
+          ? data.comments 
+          : [data.comments || "No comments yet."]), newComment];
+        await updateDoc(doc(db, "events", docId), { comments: updatedComments });
+        loadAndDisplayEvents();
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      alert("Failed to add comment.");
+    }
+  }
+}
+
+// --- 6. Authentication Listener ---
+subscribeToAuthChanges((user) => {
+  const logoutBtnEl = document.getElementById("logout-btn");
+  const loginLinkEl = document.getElementById("login-link");
+  const onProtectedPage = window.location.pathname.endsWith("index.html");
+
+  if (user) {
+    userId = user.uid; 
+    console.log("User logged in:", user.email);
+    loadAndDisplayEvents(); 
+    if (logoutBtnEl) logoutBtnEl.style.display = 'block'; 
+    if (loginLinkEl) loginLinkEl.style.display = 'none';
+  } else {
+    userId = null;
+    console.log("User logged out");
+    loadAndDisplayEvents();
+
+    if (logoutBtnEl) logoutBtnEl.style.display = 'none';
+    if (loginLinkEl) loginLinkEl.style.display = 'block';
+    
+    if (onProtectedPage) {
+      window.location.href = "login.html";
+    }
+  }
+});
+
+// --- 7. Logout Functionality ---
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error("Error logging out:", error);
+      alert("Failed to log out. Please try again.");
+    }
+  });
+}
