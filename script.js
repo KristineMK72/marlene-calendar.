@@ -53,7 +53,8 @@ form.addEventListener("submit", async (e) => {
   };
   
   try {
-    await addDoc(collection(db, "events"), eventData);
+    const docRef = await addDoc(collection(db, "events"), eventData);
+    console.log("Event added with ID: ", docRef.id);
     alert(`Event "${title}" added and saved!`);
     loadAndDisplayEvents();
     form.reset();
@@ -71,9 +72,11 @@ async function loadAndDisplayEvents() {
   }
   
   try {
+    console.log("Attempting to load events...");
     const q = query(collection(db, "events")); // Fetch all events
     const querySnapshot = await getDocs(q);
-    
+    console.log("Query Snapshot: ", querySnapshot);
+
     list.innerHTML = "";
     
     if (querySnapshot.empty) {
@@ -169,11 +172,13 @@ subscribeToAuthChanges((user) => {
 
   if (user) {
     userId = user.uid; 
+    console.log("User logged in:", user.email);
     loadAndDisplayEvents(); 
     if (logoutBtnEl) logoutBtnEl.style.display = 'block'; 
     if (loginLinkEl) loginLinkEl.style.display = 'none';
   } else {
     userId = null;
+    console.log("User logged out");
     loadAndDisplayEvents();
 
     if (logoutBtnEl) logoutBtnEl.style.display = 'none';
