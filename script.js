@@ -86,12 +86,12 @@ async function loadAndDisplayEvents() {
 
     querySnapshot.forEach((docSnap) => {
       const ev = docSnap.data();
-      // Robustly handle comments, ensuring it's always an array
+      // Explicitly handle string comments and ensure it's an array
       const comments = Array.isArray(ev.comments) 
         ? ev.comments 
-        : ev.comments === undefined || ev.comments === null 
+        : ev.comments === null || ev.comments === undefined 
           ? ["No comments yet."]
-          : [ev.comments.toString() || "No comments yet."];
+          : [ev.comments.toString().trim() || "No comments yet."];
       const li = document.createElement("li");
       li.classList.add('event-item');
 
@@ -161,7 +161,7 @@ async function addComment(docId) {
         const data = eventDoc.data();
         const updatedComments = [...(Array.isArray(data.comments) 
           ? data.comments 
-          : [data.comments || "No comments yet."]), newComment];
+          : [data.comments?.toString().trim() || "No comments yet."]), newComment];
         await updateDoc(doc(db, "events", docId), { comments: updatedComments });
         loadAndDisplayEvents();
       }
