@@ -10,24 +10,24 @@
 
     <link rel="stylesheet" href="style.css?v=1" /> 
 
-    <!-- ADDED type="module" HERE -->
-    <script type="module" src="auth.js?v=1" defer></script>
-    <!-- ADDED type="module" HERE -->
-    <script type="module" src="script.js?v=1" defer></script>
+    <!-- Use a single script file (app.js) instead of separate auth.js and script.js -->
+    <script type="module" src="app.js?v=1" defer></script>
 </head>
 <body>
   <div class="container">
-    
+    <!-- Authentication Controls -->
     <button id="logout-btn" class="logout-btn" style="display:none;">Logout</button>
-    
-    <a href="login.html" id="login-link" class="login-link" style="display:none;">Log In / Sign Up</a>
+    <a href="login.html" id="login-link" class="login-link" style="display:block;">Log In / Sign Up</a>
     
     <h1>Marlene's Calendar</h1>
 
-    <form id="event-form">
+    <!-- Updated Form with Time and Comments -->
+    <form id="add-event-form">
       <input type="text" id="event-title" placeholder="Event Title" required />
       <input type="date" id="event-date" required />
+      <input type="time" id="event-time" placeholder="Time (optional)" /> <!-- New time field -->
       <input type="text" id="event-location" placeholder="Location (optional)" />
+      <textarea id="event-comments" placeholder="Initial comment (optional)"></textarea> <!-- New comments field -->
       <button type="submit">Add Event</button>
     </form>
 
