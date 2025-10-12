@@ -30,7 +30,7 @@ let userId = null;
 // --- 1. Event Submission Logic (SAVE to Firestore) ---
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!userId) {
+  if (!auth.currentUser) {
       alert("Please log in to add events.");
       return;
   }
@@ -42,7 +42,7 @@ form.addEventListener("submit", async (e) => {
   const initialComment = document.getElementById("event-comments").value || "No comments yet.";
 
   const eventData = { 
-    userId: userId, 
+    userId: auth.currentUser.uid, 
     title: title, 
     date: date, 
     time: time || '', 
@@ -65,7 +65,7 @@ form.addEventListener("submit", async (e) => {
 
 // --- 2. Event Loading and Display Logic (LOAD from Firestore) ---
 async function loadAndDisplayEvents() {
-  if (!userId) {
+  if (!auth.currentUser) {
     list.innerHTML = "<p>Please log in to view events.</p>";
     return;
   }
@@ -102,8 +102,8 @@ async function loadAndDisplayEvents() {
       list.appendChild(li);
     });
   } catch (error) {
-    console.error("Error loading events:", error);
-    list.innerHTML = "<p>Failed to load events from the database. Check your internet connection or Firebase rules.</p>";
+    console.error("Error loading events:", error.message);
+    list.innerHTML = `<p>Failed to load events: ${error.message}. Check Firebase rules or internet connection.</p>`;
   }
 }
 
