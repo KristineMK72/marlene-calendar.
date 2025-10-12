@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marlene's Calendar 🐱</title>
+    
+    <meta http-equiv="Content-Security-Policy" 
+          content="script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://cdn.jsdelivr.net; object-src 'self'">
+
+    <link rel="stylesheet" href="style.css?v=1" /> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script type="module" src="auth.js?v=1" defer></script>
+    <script type="module" src="calendar.js?v=1" defer></script>
+</head>
+<body>
+  <div class="container">
+    <button id="logout-btn" class="logout-btn" style="display:none;">Logout</button>
+    <h1>Marlene's Calendar 🐱</h1>
+    <div id="calendar"></div>
+  </div>
+</body>
+</html>
