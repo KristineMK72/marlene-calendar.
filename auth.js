@@ -21,7 +21,9 @@ import {
   where,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  updateDoc, // Added for updating comments
+  getDoc // Added for retrieving event data to update comments
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Your live Firebase configuration (Copied from your Console)
