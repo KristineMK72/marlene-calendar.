@@ -1,4 +1,4 @@
-// ===== FINAL CORRECTED auth.js SCRIPT =====
+// auth.js
 
 // 1. Import all necessary Firebase modules using the external CDN links
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -9,7 +9,7 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
-  signInWithPopup // CRITICAL FOR GOOGLE SIGN-IN
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // Import Firestore modules (for the database)
@@ -22,8 +22,8 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  updateDoc, // Added for updating comments
-  getDoc // Added for retrieving event data to update comments
+  updateDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Your live Firebase configuration (Copied from your Console)
@@ -61,7 +61,12 @@ export function signInWithGoogle() {
 }
 
 export function subscribeToAuthChanges(callback) {
-  onAuthStateChanged(auth, callback);
+  onAuthStateChanged(auth, (user) => {
+    if (user && window.location.pathname.endsWith("index.html")) {
+      window.location.href = "calendar.html";
+    }
+    callback(user);
+  });
 }
 
 // Export the service objects for use in script.js database calls
