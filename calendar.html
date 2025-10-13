@@ -1,24 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Marlene's Calendar 🐱</title>
-    
-    <meta http-equiv="Content-Security-Policy" 
-          content="script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://cdn.jsdelivr.net; object-src 'self'">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marlene's Calendar 🐱</title>
 
-    <link rel="stylesheet" href="style.css?v=1" /> 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <script type="module" src="auth.js?v=1" defer></script>
-    <script type="module" src="calendar.js?v=1" defer></script>
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy"
+        content="script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://cdn.jsdelivr.net; object-src 'self'">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css?v=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" />
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <script type="module" src="auth.js?v=1" defer></script>
+  <script type="module" src="calendar.js?v=1" defer></script>
 </head>
 <body>
   <div class="container">
     <button id="logout-btn" class="logout-btn" style="display:none;">Logout</button>
     <h1>Marlene's Calendar 🐱</h1>
+
+    <!-- Calendar -->
     <div id="calendar"></div>
+
+    <!-- Add Event Form -->
+    <form id="eventForm" class="event-form">
+      <h2>Add New Event</h2>
+      <input type="text" id="title" placeholder="Event Title" required />
+      <input type="date" id="date" required />
+      <input type="time" id="time" />
+      <textarea id="comments" placeholder="Comments"></textarea>
+      <button type="submit">Add Event</button>
+    </form>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <h2 id="modalTitle"></h2>
+        <p><strong>Time:</strong> <span id="modalTime"></span></p>
+        <p><strong>Comments:</strong> <span id="modalComments"></span></p>
+        <button onclick="document.getElementById('eventModal').style.display='none'">Close</button>
+      </div>
+    </div>
   </div>
 </body>
 </html>
