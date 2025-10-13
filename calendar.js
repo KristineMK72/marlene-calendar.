@@ -45,6 +45,12 @@ calendar.render();
 
 async function addEvent(title, date) {
   try {
+    // Debug: Check auth state
+    if (!auth.currentUser) {
+      throw new Error("No authenticated user found.");
+    }
+    console.log("Adding event with title:", title, "date:", date, "user:", auth.currentUser.email);
+
     const eventData = { 
       userId: auth.currentUser.uid, 
       title: title, 
@@ -59,8 +65,8 @@ async function addEvent(title, date) {
     console.log("Event added with ID: ", docRef.id);
     loadEvents();
   } catch (error) {
-    console.error("Error adding event: ", error);
-    alert("Could not save event to database.");
+    console.error("Error adding event: ", error.message);
+    alert(`Could not save event to database: ${error.message}`);
   }
 }
 
