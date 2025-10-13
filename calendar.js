@@ -12,6 +12,7 @@ import {
 
 const calendarEl = document.getElementById("calendar");
 const logoutBtn = document.getElementById("logout-btn");
+const authStatus = document.getElementById("auth-status");
 
 let userId = null;
 
@@ -30,8 +31,14 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
     }
   },
   eventClick: function(info) {
-    const comments = info.event.extendedProps.comments || ["No comments yet."];
-    alert(`Comments for "${info.event.title}":\n${comments.join("\n")}`);
+    console.log("Event clicked:", info.event.title); // Debug log
+    let comments = info.event.extendedProps.comments;
+    if (typeof comments === "string") {
+      comments = [comments]; // Treat string as a single-item array
+    } else if (!comments || comments === null) {
+      comments = ["No comments yet."]; // Fallback for undefined/null
+    }
+    authStatus.textContent = `Comments for "${info.event.title}": ${comments.join("\n")}`;
   }
 });
 calendar.render();
@@ -44,7 +51,7 @@ async function addEvent(title, date) {
       date: date, 
       time: '', 
       location: '', 
-      comments: ["No comments yet."], 
+      comments: "No comments yet.", // Storing as string to match existing data
       createdBy: auth.currentUser.email,
       timestamp: new Date()
     };
@@ -61,11 +68,18 @@ async function loadEvents() {
   try {
     const q = query(collection(db, "events"));
     const querySnapshot = await getDocs(q);
-    const events = querySnapshot.docs.map(doc => ({
-      title: doc.data().title,
-      start: doc.data().date,
-      extendedProps: { id: doc.id, comments: doc.data().comments }
-    }));
+    const events = querySnapshot.docs.map(doc => {
+      const eventData = {
+        title: doc.data().title,
+        start: doc.data().date,
+        extendedProps: { 
+          id: doc.id, 
+          comments: doc.data().comments || "No comments yet." // Handle as string
+        }
+      };
+      console.log("Event loaded:", eventData); // Debug log
+      return eventData;
+    });
     calendar.removeAllEvents();
     calendar.addEventSource(events);
   } catch (error) {
@@ -84,20 +98,12 @@ async function deleteEvent(eventId) {
   }
 }
 
-// Keep the deletion logic but add comment display option
 calendarEl.addEventListener('click', (e) => {
   if (e.target.classList.contains('fc-event-title')) {
     const event = e.target.closest('.fc-event');
     const eventId = event.getAttribute('data-event-id');
-    if (eventId) {
-      if (confirm("Delete this event?")) {
-        deleteEvent(eventId);
-      } else {
-        // Option to view comments instead of deleting
-        const eventData = calendar.getEventById(eventId);
-        const comments = eventData.extendedProps.comments || ["No comments yet."];
-        alert(`Comments for "${eventData.title}":\n${comments.join("\n")}`);
-      }
+    if (eventId && confirm("Delete this event?")) {
+      deleteEvent(eventId);
     }
   }
 });
