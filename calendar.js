@@ -1,5 +1,3 @@
-// calendar.js
-
 import { subscribeToAuthChanges, logoutUser, auth, db } from "./auth.js";
 import { 
     collection, 
@@ -30,6 +28,10 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
     } else {
       alert("Please log in to add events.");
     }
+  },
+  eventClick: function(info) {
+    const comments = info.event.extendedProps.comments || ["No comments yet."];
+    alert(`Comments for "${info.event.title}":\n${comments.join("\n")}`);
   }
 });
 calendar.render();
@@ -82,12 +84,20 @@ async function deleteEvent(eventId) {
   }
 }
 
+// Keep the deletion logic but add comment display option
 calendarEl.addEventListener('click', (e) => {
   if (e.target.classList.contains('fc-event-title')) {
     const event = e.target.closest('.fc-event');
     const eventId = event.getAttribute('data-event-id');
-    if (eventId && confirm("Delete this event?")) {
-      deleteEvent(eventId);
+    if (eventId) {
+      if (confirm("Delete this event?")) {
+        deleteEvent(eventId);
+      } else {
+        // Option to view comments instead of deleting
+        const eventData = calendar.getEventById(eventId);
+        const comments = eventData.extendedProps.comments || ["No comments yet."];
+        alert(`Comments for "${eventData.title}":\n${comments.join("\n")}`);
+      }
     }
   }
 });
